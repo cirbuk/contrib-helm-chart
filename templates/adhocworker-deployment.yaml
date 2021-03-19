@@ -39,6 +39,9 @@ spec:
           volumeMounts:
             - name: config
               mountPath: /config
+            - name: query-runner-python
+              mountPath: /app/redash/query_runner/python.py
+              subPath: python.py
           env:
           {{- include "redash.env" . | nindent 12 }}
           {{- range $key, $value := .Values.adhocWorker.env }}
@@ -51,6 +54,9 @@ spec:
         - name: config
           configMap:
             name: {{ include "redash.fullname" . }}
+        - name: query-runner-python
+          configMap:
+            name: query-runner-python
     {{- if .Values.adhocWorker.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.adhocWorker.nodeSelector | indent 8 }}
