@@ -36,10 +36,6 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["/bin/sh"]
           args: ["-c", ". /config/dynamicenv.sh && /app/bin/docker-entrypoint worker"]
-          lifecycle:
-            postStart:
-              exec:
-                command: ["/bin/sh", "-c", "pip install matplotlib"]
           volumeMounts:
             - name: config
               mountPath: /config
