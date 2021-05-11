@@ -39,6 +39,12 @@ spec:
           volumeMounts:
             - name: config
               mountPath: /config
+            - name: query-runner-python
+              mountPath: /app/redash/query_runner/python.py
+              subPath: python.py
+            - name: query-runner-cw-insights
+              mountPath: /app/redash/query_runner/cloudwatch_insights.py
+              subPath: cloudwatch_insights.py
           env:
           {{- include "redash.env" . | nindent 12 }}
           {{- range $key, $value := .Values.scheduledWorker.env }}
@@ -51,6 +57,12 @@ spec:
         - name: config
           configMap:
             name: {{ include "redash.fullname" . }}
+        - name: query-runner-python
+          configMap:
+            name: query-runner-python
+        - name: query-runner-cw-insights
+          configMap:
+            name: query-runner-cw-insights
     {{- if .Values.scheduledWorker.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.scheduledWorker.nodeSelector | indent 8 }}

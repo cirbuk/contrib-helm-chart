@@ -37,6 +37,9 @@ spec:
           volumeMounts:
             - name: config
               mountPath: /config
+            - name: unsafe-params
+              mountPath: /app/redash/models/parameterized_query.py
+              subPath: parameterized_query.py
           env:
           {{- include "redash.env" . | nindent 12 }}
           {{- range $key, $value := .Values.server.env }}
@@ -69,6 +72,9 @@ spec:
         - name: config
           configMap:
             name: {{ include "redash.fullname" . }}
+        - name: unsafe-params
+          configMap:
+            name: unsafe-params
     {{- with .Values.server.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
