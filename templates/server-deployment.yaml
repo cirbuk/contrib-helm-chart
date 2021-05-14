@@ -33,13 +33,16 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["/bin/sh"]
-          args: ["-c", ". /config/dynamicenv.sh && /app/bin/docker-entrypoint server"]
+          args: ["-c", ". /config/dynamicenv.sh && wget https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json -O /app/client/dist/data/650f3ee.japan.prefectures.geo.json && sed -i 's/GEO_ID/iso_3166_2/g' /app/client/dist/data/650f3ee.japan.prefectures.geo.json && /app/bin/docker-entrypoint server"]
           volumeMounts:
             - name: config
               mountPath: /config
             - name: unsafe-params
               mountPath: /app/redash/models/parameterized_query.py
               subPath: parameterized_query.py
+            #- name: map-usa
+            #  mountPath: /app/client/dist/data/650f3ee.japan.prefectures.geo.json
+            #  subPath: 650f3ee.japan.prefectures.geo.json
           env:
           {{- include "redash.env" . | nindent 12 }}
           {{- range $key, $value := .Values.server.env }}
@@ -75,6 +78,9 @@ spec:
         - name: unsafe-params
           configMap:
             name: unsafe-params
+        #- name: map-usa
+        #  configMap:
+        #    name: map-usa
     {{- with .Values.server.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
